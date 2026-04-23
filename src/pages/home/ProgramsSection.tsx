@@ -107,7 +107,7 @@ export default function ProgramsSection() {
                 </ul>
 
                 <a 
-                  href="#contact"
+                  href="#pricing"
                   className={`flex items-center gap-2 ${program.accentColor} font-black uppercase tracking-widest text-[10px] group/btn`}
                 >
                   View Plans <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />

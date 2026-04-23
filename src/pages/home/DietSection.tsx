@@ -110,7 +110,7 @@ export default function DietSection() {
             </ul>
 
             <a 
-              href="#contact"
+              href="#pricing"
               className="bg-accent text-bg-dark px-10 py-5 rounded-full font-heading font-black text-xl uppercase tracking-tighter hover:bg-white transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-2 w-fit"
             >
               Explore Meal Plans <ChevronRight size={20} strokeWidth={3} />

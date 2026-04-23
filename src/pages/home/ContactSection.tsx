@@ -1,49 +1,14 @@
-import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Instagram, Send, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Instagram, Copy, AlertCircle, Check } from 'lucide-react';
+import { useState } from 'react';
 
 export default function ContactSection() {
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: 'Choose your battlefield...',
-    message: ''
-  });
+  const [copied, setCopied] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (status === 'loading') return;
-
-    setStatus('loading');
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', subject: 'Choose your battlefield...', message: '' });
-        setTimeout(() => setStatus('idle'), 5000);
-      } else {
-        setStatus('error');
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-      setStatus('error');
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText('ironcoaching77@gmail.com');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -74,9 +39,12 @@ export default function ContactSection() {
 
             <div className="space-y-8">
                 <div className="flex items-center gap-6 group">
-                    <div className="w-16 h-16 border border-white/10 flex items-center justify-center transition-all group-hover:bg-accent group-hover:text-bg-dark">
+                    <a 
+                      href="mailto:ironcoaching77@gmail.com" 
+                      className="w-16 h-16 border border-white/10 flex items-center justify-center transition-all group-hover:bg-accent group-hover:text-bg-dark outline-none focus:ring-2 focus:ring-accent"
+                    >
                         <Mail size={24} />
-                    </div>
+                    </a>
                     <div className="flex-grow">
                         <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Email Us</div>
                         <a href="mailto:ironcoaching77@gmail.com" className="text-xl font-heading font-black uppercase tracking-tight hover:text-accent transition-colors">IRONCOACHING77@GMAIL.COM</a>
@@ -107,105 +75,31 @@ export default function ContactSection() {
             </div>
           </motion.div>
 
-          {/* Form Side */}
+          {/* Form Side / Instructions Container */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="bg-surface p-12 border border-white/5 relative"
+            className="bg-surface p-12 border border-white/5 relative flex flex-col justify-center"
           >
-            {status === 'success' ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="h-full flex flex-col items-center justify-center text-center py-20"
-              >
-                <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center mb-8">
-                  <CheckCircle2 size={48} className="text-accent" />
-                </div>
-                <h3 className="text-4xl font-black uppercase italic mb-4">Mission Received</h3>
-                <p className="text-white/50 font-medium max-w-xs">Your briefing has been sent. Check your secure comms within 24 hours.</p>
-                <button 
-                  onClick={() => setStatus('idle')}
-                  className="mt-8 text-accent font-black uppercase tracking-[0.2em] text-[10px] hover:underline"
-                >
-                  Send another message
-                </button>
-              </motion.div>
-            ) : (
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                  <div>
-                      <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-2">Full Name</label>
-                      <input 
-                          type="text" 
-                          name="name"
-                          required
-                          value={formData.name}
-                          onChange={handleChange}
-                          placeholder="e.g. John Wick"
-                          className="w-full bg-bg-dark/50 border border-white/10 px-6 py-4 outline-none focus:border-accent transition-colors text-white font-medium"
-                      />
-                  </div>
-                  <div>
-                      <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-2">Email Address</label>
-                      <input 
-                          type="email" 
-                          name="email"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="john@example.com"
-                          className="w-full bg-bg-dark/50 border border-white/10 px-6 py-4 outline-none focus:border-accent transition-colors text-white font-medium"
-                      />
-                  </div>
-                  <div>
-                      <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-2">Primary Goal</label>
-                      <select 
-                        name="subject"
-                        required
-                        value={formData.subject}
-                        onChange={handleChange}
-                        className="w-full bg-bg-dark/50 border border-white/10 px-6 py-4 outline-none focus:border-accent transition-colors text-white/60 font-medium appearance-none"
-                      >
-                          <option disabled>Choose your battlefield...</option>
-                          <option>Absolute Strength</option>
-                          <option>Elite Aesthetics</option>
-                          <option>Metabolic Fire</option>
-                          <option>Tactical Athlete</option>
-                      </select>
-                  </div>
-                  <div>
-                      <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-2">Your Message</label>
-                      <textarea 
-                          name="message"
-                          required
-                          value={formData.message}
-                          onChange={handleChange}
-                          rows={4}
-                          placeholder="Tell us about your mission..."
-                          className="w-full bg-bg-dark/50 border border-white/10 px-6 py-4 outline-none focus:border-accent transition-colors text-white font-medium resize-none"
-                      />
-                  </div>
-                  
-                  {status === 'error' && (
-                    <div className="flex items-center gap-2 text-red-500 text-xs font-bold uppercase tracking-tight">
-                      <AlertCircle size={14} /> Failed to transmit briefing. Try again.
-                    </div>
-                  )}
-
+            <div className="p-8 bg-accent/5 border border-accent/20 rounded-lg">
+                <p className="text-accent text-[12px] font-black uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
+                    <AlertCircle size={18} /> How to Join
+                </p>
+                <p className="text-white/90 text-lg md:text-xl font-medium leading-relaxed italic">
+                    "Please email us your full name, your fitness goals, and the program package you would like to choose."
+                </p>
+                <div className="mt-8 pt-8 border-t border-white/10">
                   <button 
-                    disabled={status === 'loading'}
-                    className="w-full bg-accent text-bg-dark font-heading font-black text-2xl uppercase tracking-tighter py-6 flex items-center justify-center gap-3 hover:bg-white transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:transform-none"
+                    onClick={copyToClipboard}
+                    className="inline-flex items-center gap-3 bg-accent text-bg-dark px-8 py-4 rounded-full font-heading font-black text-xl tracking-tight hover:bg-white transition-all transform hover:-translate-y-1 active:scale-95 cursor-pointer"
                   >
-                    {status === 'loading' ? (
-                      <>Transmitting... <Loader2 size={24} className="animate-spin" /></>
-                    ) : (
-                      <>Send Mission Briefing <Send size={24} /></>
-                    )}
+                    {copied ? 'Copied!' : 'ironcoaching77@gmail.com'} 
+                    {copied ? <Check size={20} /> : <Copy size={20} />}
                   </button>
-              </form>
-            )}
+                </div>
+            </div>
 
             <div className="absolute -bottom-px -right-px w-20 h-20 bg-gradient-to-br from-transparent to-accent/10 pointer-events-none" />
           </motion.div>

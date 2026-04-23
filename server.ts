@@ -32,7 +32,7 @@ async function startServer() {
       if (resend) {
         const { data, error } = await resend.emails.send({
           from: "IronCoach Contact <onboarding@resend.dev>",
-          to: process.env.CONTACT_EMAIL || "sadmantate@gmail.com",
+          to: process.env.CONTACT_EMAIL || "ironcoaching77@gmail.com",
           subject: `IronCoach Contact: ${subject || "New Inquiry"}`,
           text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
         });
